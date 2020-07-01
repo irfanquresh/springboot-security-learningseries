@@ -3,20 +3,32 @@ package com.intellocent.springboot.config;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.User.UserBuilder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import com.intellocent.springboot.service.UserService;
 
 @Configuration
 @EnableWebSecurity
 public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+	// @Autowired
+	// private DataSource securityDataSource;
+
+	// add a reference to our security data source
 	@Autowired
-	private DataSource securityDataSource;
+	private UserService userService;
+
+	@Autowired
+	private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -29,7 +41,10 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
 		 * .withUser(users.username("bhavik").password("123").roles("EMPLOYEE"));
 		 */
 
-		auth.jdbcAuthentication().dataSource(securityDataSource);
+		// MYSQL JDBC based auth
+		// auth.jdbcAuthentication().dataSource(securityDataSource);
+
+		auth.authenticationProvider(authenticationProvider());
 	}
 
 	@Override
@@ -42,11 +57,44 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
 		 * permitAll();
 		 */
 
-		http.authorizeRequests().antMatchers("/").hasRole("EMPLOYEE").antMatchers("/leaders/**").hasRole("MANAGER")
-				.antMatchers("/system/**").hasRole("ADMIN").and().formLogin().loginPage("/showMyLoginPage")
-				.loginProcessingUrl("/authenticateTheUser").permitAll().and().logout().permitAll().and()
-				.exceptionHandling().accessDeniedPage("/access-denied");
+		/*
+		 * http.authorizeRequests().antMatchers("/").hasRole("EMPLOYEE").antMatchers(
+		 * "/leaders/**").hasRole("MANAGER")
+		 * .antMatchers("/system/**").hasRole("ADMIN").and().formLogin().loginPage(
+		 * "/showMyLoginPage")
+		 * .loginProcessingUrl("/authenticateTheUser").permitAll().and().logout().
+		 * permitAll().and() .exceptionHandling().accessDeniedPage("/access-denied");
+		 */
 
+		
+		http.authorizeRequests()
+		.antMatchers("/").hasRole("EMPLOYEE")
+		.antMatchers("/leaders/**").hasRole("MANAGER")
+		.antMatchers("/systems/**").hasRole("ADMIN")
+		.and()
+		.formLogin()
+			.loginPage("/showMyLoginPage")
+			.loginProcessingUrl("/authenticateTheUser")
+			.successHandler(customAuthenticationSuccessHandler)
+			.permitAll()
+		.and()
+		.logout().permitAll()
+		.and()
+		.exceptionHandling().accessDeniedPage("/access-denied");
+	}
+
+	@Bean
+	public BCryptPasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
+	// authenticationProvider bean definition
+	@Bean
+	public DaoAuthenticationProvider authenticationProvider() {
+		DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
+		auth.setUserDetailsService(userService); // set the custom user details service
+		auth.setPasswordEncoder(passwordEncoder()); // set the password encoder - bcrypt
+		return auth;
 	}
 
 }

@@ -34,7 +34,7 @@
 	<security:authorize access="hasRole('ADMIN')">
 		<p>Admin sections</p>
 		<p>
-			<a href="${pageContext.request.contextPath}/system">System</a>
+			<a href="${pageContext.request.contextPath}/systems">System</a>
 		</p>
 		<hr>
 	</security:authorize>

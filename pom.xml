@@ -4,15 +4,19 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.intellocent</groupId>
-	<artifactId>spring-security-app</artifactId>
+	<artifactId>springboot-security-learningseries</artifactId>
 	<version>1.0</version>
 	<packaging>war</packaging>
 
 	<name>springboot-security-learningseries</name>
 
 	<properties>
-		<springframework.version>5.2.6.RELEASE</springframework.version>
+		<springframework.version>5.2.5.RELEASE</springframework.version>
 		<springsecurity.version>5.3.1.RELEASE</springsecurity.version>
+		<hibernate.version>5.4.14.Final</hibernate.version>
+		<mysql.connector.version>8.0.19</mysql.connector.version>
+		<c3po.version>0.9.5.2</c3po.version>
+
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
@@ -26,24 +30,8 @@
 			<version>${springframework.version}</version>
 		</dependency>
 
-		<!-- Servlet, JSP and JSTL support -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>4.0.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.servlet.jsp</groupId>
-			<artifactId>javax.servlet.jsp-api</artifactId>
-			<version>2.3.3</version>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
-			<version>1.2</version>
-		</dependency>
+		<!-- Spring Security -->
+		<!-- spring-security-web and spring-security-config -->
 
 		<dependency>
 			<groupId>org.springframework.security</groupId>
@@ -57,33 +45,66 @@
 			<version>${springsecurity.version}</version>
 		</dependency>
 
-		<!-- Add spring security tag lib support -->
+		<!-- Add Spring Security Taglibs support -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-taglibs</artifactId>
 			<version>${springsecurity.version}</version>
 		</dependency>
 
+		<!-- Spring Transactions -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${springframework.version}</version>
+		</dependency>
 
+		<!-- Spring ORM -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${springframework.version}</version>
+		</dependency>
 
-		<!-- Add MySQL and C3P0 -->
+		<!-- Hibernate Core -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+
+		<!-- Add MySQL and C3P0 support -->
+
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.45</version>
+			<version>${mysql.connector.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.mchange</groupId>
 			<artifactId>c3p0</artifactId>
-			<version>0.9.5.2</version>
+			<version>${c3po.version}</version>
 		</dependency>
 
-		<!-- to compensate for java 9+ not including jaxb -->
+
+		<!-- Servlet, JSP and JSTL support -->
 		<dependency>
-			<groupId>javax.xml.bind</groupId>
-			<artifactId>jaxb-api</artifactId>
-			<version>2.3.0</version>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>javax.servlet.jsp-api</artifactId>
+			<version>2.3.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
 		</dependency>
 
 		<dependency>
@@ -93,21 +114,28 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- Hibernate Validator -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>6.0.7.Final</version>
+		</dependency>
+
 	</dependencies>
 
-	<!-- TO DO: Add support for Maven WAR Plugin -->
 
 	<build>
 		<finalName>springboot-security-learningseries</finalName>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-war-plugin</artifactId>
-					<version>3.3.0</version>
-				</plugin>
-			</plugins>
-		</pluginManagement>
+
+		<plugins>
+			<plugin>
+				<!-- Add Maven coordinates (GAV) for: maven-war-plugin -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>3.2.0</version>
+			</plugin>
+		</plugins>
+
 	</build>
 
 </project>

@@ -13,11 +13,11 @@ public class AppController {
 
 	@GetMapping("/leaders")
 	public String showLeaderPage() {
-		return "leader";
+		return "leaders";
 	}
 
-	@GetMapping("/system")
+	@GetMapping("/systems")
 	public String showSystemPage() {
-		return "system";
+		return "systems";
 	}
 }

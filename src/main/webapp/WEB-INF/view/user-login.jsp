@@ -55,8 +55,16 @@
 			</p>
 
 			<input type="hidden" name="${_csrf.parameterName}"
-				value="${_csrf.token}"/>
+				value="${_csrf.token}" />
 			<button class="btn btn-lg btn-primary btn-block" type="submit">Sign-in</button>
+
+			<hr />
+			<div class="">
+				<a
+					href="${pageContext.request.contextPath}/register/showRegistrationForm"
+					class="btn btn-lg btn-primary btn-block" role="button" aria-pressed="true">
+					Register New User </a>
+			</div>
 		</form>
 	</div>
 </body>
