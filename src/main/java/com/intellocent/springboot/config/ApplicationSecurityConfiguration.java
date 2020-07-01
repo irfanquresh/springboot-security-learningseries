@@ -1,5 +1,8 @@
 package com.intellocent.springboot.config;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,20 +15,37 @@ import org.springframework.security.core.userdetails.User.UserBuilder;
 @EnableWebSecurity
 public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+	@Autowired
+	private DataSource securityDataSource;
+
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		UserBuilder users = User.withDefaultPasswordEncoder();
+		/*
+		 * UserBuilder users = User.withDefaultPasswordEncoder();
+		 * auth.inMemoryAuthentication().withUser(users.username("g2").password("123").
+		 * roles("ADMIN", "EMPLOYEE"))
+		 * .withUser(users.username("bhasker").password("123").roles("MANAGER",
+		 * "EMPLOYEE"))
+		 * .withUser(users.username("bhavik").password("123").roles("EMPLOYEE"));
+		 */
 
-		auth.inMemoryAuthentication().withUser(users.username("g2").password("123").roles("Admin"))
-				.withUser(users.username("bhasker").password("123").roles("Manager"))
-				.withUser(users.username("bhavik").password("123").roles("Employee"));
+		auth.jdbcAuthentication().dataSource(securityDataSource);
 	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
-		http.authorizeRequests().anyRequest().authenticated().and().formLogin().loginPage("/showMyLoginPage")
-				.loginProcessingUrl("/authenticateTheUser").permitAll().and().logout().permitAll();
+		/*
+		 * http.authorizeRequests().anyRequest().authenticated().and().formLogin().
+		 * loginPage("/showMyLoginPage")
+		 * .loginProcessingUrl("/authenticateTheUser").permitAll().and().logout().
+		 * permitAll();
+		 */
+
+		http.authorizeRequests().antMatchers("/").hasRole("EMPLOYEE").antMatchers("/leaders/**").hasRole("MANAGER")
+				.antMatchers("/system/**").hasRole("ADMIN").and().formLogin().loginPage("/showMyLoginPage")
+				.loginProcessingUrl("/authenticateTheUser").permitAll().and().logout().permitAll().and()
+				.exceptionHandling().accessDeniedPage("/access-denied");
 
 	}
 

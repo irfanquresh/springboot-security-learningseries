@@ -7,7 +7,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class AppController {
 
 	@GetMapping("/")
-	public String showHome() {
+	public String showHomePage() {
 		return "home";
+	}
+
+	@GetMapping("/leaders")
+	public String showLeaderPage() {
+		return "leader";
+	}
+
+	@GetMapping("/system")
+	public String showSystemPage() {
+		return "system";
 	}
 }
